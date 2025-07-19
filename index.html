@@ -1,0 +1,588 @@
+<html><head><base href><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Festa de Anivers&#xe1;rio - Isa</title>
+<link href="https://fonts.googleapis.com/css2?family=Satisfy&amp;display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background: url('https://i.ibb.co/GTSKKXs/4981faeb-484e-460c-9c17-4697665f9730.jpg') no-repeat center center;
+    background-size: cover;
+    transition: background-image 1s ease;
+}
+
+#game-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#dialogue-box {
+    width: 90%;
+    background: rgba(0, 0, 0, 0.8); 
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 15%;  
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 1000;
+}
+
+#choices-container {
+    display: none;
+    width: 90%;
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 10px;
+    flex-direction: column;
+}
+
+.choice-btn {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.2s;
+}
+
+.choice-btn:hover {
+    transform: scale(1.02);
+}
+
+#character-name {
+    font-weight: bold;
+    color: #9370DB;
+}
+
+#character-sprite {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 85vh;
+}
+
+#gift-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+#gift-box {
+    width: 200px;
+    height: 200px;
+    background: #888888;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+#gift-box:hover {
+    transform: scale(1.05);
+}
+
+#gift-image {
+    display: none;
+    max-width: 90%;
+    max-height: 90vh;
+    position: relative;
+}
+
+#close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 2001;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+}
+
+#close-button:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+.gift-container {
+    position: relative;
+}
+
+.navigation-button {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+    transition: transform 0.3s ease;
+}
+
+.navigation-button img {
+    width: 60px;
+    height: auto;
+}
+
+.navigation-button:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+.button-tooltip {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.navigation-button:hover .button-tooltip {
+    opacity: 1;
+}
+
+#letter-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+#letter-content {
+    font-family: 'Satisfy', cursive;
+    font-size: 1.2em;
+    line-height: 1.5;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 80%;
+    position: relative;
+    white-space: pre-line;
+}
+
+@media (max-width: 768px) {
+    #dialogue-box, #choices-container {
+        width: 95%;
+        font-size: 1rem;
+        bottom: 15%;  
+        padding: 12px;
+    }
+    
+    #character-sprite {
+        height: 60vh;
+    }
+}
+</style>
+
+<script>document.addEventListener('DOMContentLoaded', function () {
+  const kitchenDialogues = [{
+    name: "Isa",
+    text: "(Lety entrou correndo toda afobada com uma bebida na mão, ela sempre fica assim quando vê algum garoto bonito. Mas não imaginei que ela fosse vir tão rápido nessa direção...)",
+    sprite: "https://i.ibb.co/qkLLmzD/LetyE6.png"
+  }, {
+    name: "Lety",
+    text: "AI MEUDEUS!",
+    nameColor: "#1463b1",
+    sprite: "https://i.ibb.co/jf4QgBY/Lety10.png"
+  }, {
+    name: "Isa",
+    text: "(Tudo aconteceu tão rápido... Primeiro senti o impacto, depois o líquido gelado na minha roupa)",
+    keepSprite: true,
+    sprite: "https://i.ibb.co/jf4QgBY/Lety10.png"
+  }, {
+    name: "Isa",
+    text: "Minha roupa...está...molhada?",
+    sprite: "https://i.ibb.co/6Bqtc2w/Lety9.png"
+  }, {
+    name: "Lety",
+    text: "Foi mal, foi mal! É que eu vi um garoto passando e me distrai completamente! Eu não te vi!",
+    nameColor: "#1463b1",
+    sprite: "https://i.ibb.co/BfNP5c6/LetyE4.png"
+  }, {
+    name: "Rosalya",
+    text: "Isa! Como é que você vai buscar bebida e some assim da sua própria festa?",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/rHmfjW2/37-Sem-T-tulo-20250109125516.png"
+  }, {
+    name: "Rosalya",
+    text: "...",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/FxHrKML/37-Sem-T-tulo-20250109130802.png"
+  }, {
+    name: "Rosalya",
+    text: "Essa mancha é...",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/T2nHy1f/37-Sem-T-tulo-20250109131304.png"
+  }, {
+    name: "Isa",
+    text: "(Eu vejo seus olhos brilharem por um instante)",
+    sprite: "https://i.ibb.co/jkdS059/Rosalya-Baile4.png"
+  }, {
+    name: "Rosalya",
+    text: "Isa, Querida, isso é um SINAL!",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/VLNBqQK/Rosalya-Baile2.png"
+  }, {
+    name: "Rosalya",
+    text: "Sabe aquele vestido DIVINO que eu te dei?",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/jkdS059/Rosalya-Baile4.png"
+  }, {
+    name: "Isa",
+    text: "(Ela me olha com um sorriso malicioso, e eu já entendo o que ela quer dizer.)",
+    keepSprite: true,
+    sprite: "https://i.ibb.co/jkdS059/Rosalya-Baile4.png"
+  }, {
+    name: "Isa",
+    text: "Rosa, as vezes eu acho que você tem um plano B pra tudo...",
+    keepSprite: true,
+    sprite: "https://i.ibb.co/jkdS059/Rosalya-Baile4.png"
+  }, {
+    name: "Rosalya",
+    text: "Confia em mim, vai ser o momento mais icônico da sua festa!",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/VLNBqQK/Rosalya-Baile2.png"
+  }, {
+    name: "Rosalya",
+    text: "Venha! Vamos te arrumar antes que o Castiel chegue!",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/jkdS059/Rosalya-Baile4.png"
+  }, {
+    name: "Isa",
+    text: "(Rosalya me arrastou para o banheiro)",
+    sprite: "https://i.ibb.co/B6bkBmS/Rosalya-Baile5.png",
+    background: "https://i.ibb.co/MsrxZnM/e25e269f-8287-4763-be75-687117d3af1d.jpg"
+  }, {
+    name: "Isa",
+    text: "(Eu tirei meu vestido atual e troquei pelo que ganhei da Rosalya)",
+    sprite: "https://i.ibb.co/VLNBqQK/Rosalya-Baile2.png"
+  }, {
+    name: "Rosalya",
+    text: "Sabia que esse vestido ia ficar perfeito em você!",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/VLNBqQK/Rosalya-Baile2.png"
+  }, {
+    name: "Rosalya",
+    text: "Agora vamos, você ainda tem muito do que aproveitar",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/jkdS059/Rosalya-Baile4.png",
+    background: "https://i.ibb.co/W2LB0X9/09f8b2c2-45e8-4eef-aa15-924b69e8ef8c.jpg"
+  }, {
+    name: "Castiel",
+    text: "...",
+    nameColor: "#ff4d4d",
+    sprite: "https://i.ibb.co/bQ01M0N/1047-10773900545b8730-1.png"
+  }, {
+    name: "Rosalya",
+    text: "Parece que alguém ficou sem palavras",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/B6bkBmS/Rosalya-Baile5.png"
+  }, {
+    name: "Alexy",
+    text: "Aí está você! Estava me perguntando onde tinha se metido!",
+    nameColor: "#3f65c6",
+    sprite: "https://i.ibb.co/3kB2NwQ/Emotion-19.png"
+  }, {
+    name: "Alexy",
+    text: "Esse não é o vestido que a Rosa ia te dar de presente?",
+    nameColor: "#3f65c6",
+    sprite: "https://i.ibb.co/ypvRSZZ/Emotion-22.png"
+  }, {
+    name: "Isa",
+    text: "Longa história. Aconteceu um imprevisto então acabei colocando ele.",
+    keepSprite: true
+  }, {
+    name: "Alexy",
+    text: "Rosa, você arrasou na produção!",
+    nameColor: "#3f65c6",
+    sprite: "https://i.ibb.co/Qr418FT/Emotion-20.png"
+  }, {
+    name: "Rosalya",
+    text: "Eu sei!",
+    nameColor: "#9ca3d6",
+    sprite: "https://i.ibb.co/VLNBqQK/Rosalya-Baile2.png"
+  }, {
+    name: "Alexy",
+    text: "Falando nisso, esse é o meu presente, espero que goste!",
+    nameColor: "#3f65c6",
+    sprite: "https://i.ibb.co/3kB2NwQ/Emotion-19.png"
+  }, {
+    name: "Isa",
+    text: "Uma sacola cheia de roupas!",
+    sprite: "https://i.ibb.co/Qr418FT/Emotion-20.png",
+    showGift: true,
+    giftImage: "https://i.ibb.co/x700PvK/OIG1.jpg"
+  }, {
+    name: "Isa",
+    text: "Espera ai, tem um cartãozinho aqui!",
+    sprite: "https://i.ibb.co/3kB2NwQ/Emotion-19.png"
+  }, {
+    name: "Isa",
+    text: "Espera ai, tem um cartãozinho aqui!",
+    sprite: "https://i.ibb.co/3kB2NwQ/Emotion-19.png",
+    showLetter: true
+  }, {
+    name: "Isa",
+    text: "Eu amei demais! Você tem mesmo um ótimo gosto pra moda! Mal posso esperar pra fazer esse desfile particular!",
+    sprite: "https://i.ibb.co/3kB2NwQ/Emotion-19.png"
+  }, {
+    name: "Kim",
+    text: "Bah, então você tá ai!",
+    nameColor: "#b9f6ea",
+    sprite: "https://i.ibb.co/59PScRN/Kim3.png"
+  }, {
+    name: "Violette",
+    text: "Vo-você está muito bonita...valeu a pena a espera",
+    nameColor: "#d790d4",
+    sprite: "https://i.ibb.co/SvSg98q/64-0f7609cf13a1b3ad-1524562548.png"
+  }, {
+    name: "Kim",
+    text: "Esse daqui é o seu presente, não aguentava mais segurar ele.",
+    nameColor: "#b9f6ea",
+    sprite: "https://i.ibb.co/jrGKcHK/Kim2.png"
+  }, {
+    name: "Isa",
+    text: "Eu adorei, Kim! Pode ter certeza que eu vou tirar muitas fotos com ela!",
+    sprite: "https://i.ibb.co/KNGrBH9/Kim1.png",
+    showGift: true,
+    giftImage: "https://i.ibb.co/qCLWFPg/images-4.jpg"
+  }, {
+    name: "Violette",
+    text: "Eu costurei essa pelúcia pra você...",
+    nameColor: "#d790d4",
+    sprite: "https://i.ibb.co/dcHL3bK/645-b71738014cfe46ff.png"
+  }, {
+    name: "Violette",
+    text: "É tão fofa! Eu vou colocar na minha cômoda!",
+    sprite: "https://i.ibb.co/SvSg98q/64-0f7609cf13a1b3ad-1524562548.png",
+    showGift: true,
+    giftImage: "https://i.ibb.co/gmJTy2q/57-ff1bfa47a2b9af65-1527077769.png"
+  }, {
+    name: "Isa",
+    text: "(Todos estão sendo tão gentis com a escolha do presente...)",
+    sprite: "https://i.ibb.co/SvSg98q/64-0f7609cf13a1b3ad-1524562548.png"
+  }, {
+    name: "Isa",
+    text: "(Todos estão sendo tão gentis com a escolha do presente...)",
+    sprite: "https://i.ibb.co/SvSg98q/64-0f7609cf13a1b3ad-1524562548.png",
+    showChoices: true
+  }, {
+    name: "Lysandre",
+    text: "Desculpem interromper, mas...",
+    nameColor: "#6c8c94",
+    sprite: "https://i.ibb.co/VStNPwn/Lysandre-E34.png"
+  }, {
+    name: "Lysandre",
+    text: "Vocês não viram meu bloco de notas por aí?",
+    nameColor: "#6c8c94",
+    sprite: "https://i.ibb.co/kctG8Td/Lysandre-E35.png"
+  }];
+  const choices = [{
+    text: "Afinal, onde está o Lysandre? Ele não perdeu o convite, perdeu?",
+    response: {
+      name: "Alexy",
+      text: "Ah não, ele está por ai...Mas acho que perdeu algo mais importante que o convite",
+      nameColor: "#3f65c6",
+      sprite: "https://i.ibb.co/ypvRSZZ/Emotion-22.png"
+    }
+  }, {
+    text: "Afinal, aonde está o Armin? Pensei que estivesse com você, Alexy.",
+    response: {
+      name: "Alexy",
+      text: "Da última vez que vi, ele estava tentando montar um videogame na sala de jogos...",
+      nameColor: "#3f65c6",
+      sprite: "https://i.ibb.co/3kB2NwQ/Emotion-19.png"
+    }
+  }, {
+    text: "Vocês viram a Iris? Ela tinha dito que traria o Thomas.",
+    response: [{
+      name: "Alexy",
+      text: "Ah, ela estava aqui agora pouco! Ela foi com o Thomas buscar os instrumentos para o show!",
+      nameColor: "#3f65c6",
+      sprite: "https://i.ibb.co/Qr418FT/Emotion-20.png"
+    }, {
+      name: "Rosalya",
+      text: "Alexy!",
+      nameColor: "#9ca3d6",
+      sprite: "https://i.ibb.co/b6MBXFr/36-Sem-T-tulo-20250108173159.png"
+    }]
+  }];
+  let currentDialogueIndex = 0;
+  const dialogueBox = document.getElementById('dialogue-box');
+  const characterNameElement = document.getElementById('character-name');
+  const dialogueElement = document.getElementById('dialogue');
+  const characterSprite = document.getElementById('character-sprite');
+  const choicesContainer = document.getElementById('choices-container');
+  function showDialogue(dialogue) {
+    characterNameElement.textContent = dialogue.name;
+    dialogueElement.textContent = dialogue.text;
+    if (dialogue.nameColor) {
+      characterNameElement.style.color = dialogue.nameColor;
+    } else {
+      characterNameElement.style.color = '#9370DB';
+    }
+    if (!dialogue.keepSprite) {
+      characterSprite.src = dialogue.sprite;
+    }
+    if (dialogue.background) {
+      document.body.style.backgroundImage = `url('${dialogue.background}')`;
+    }
+    if (dialogue.showChoices) {
+      showChoices();
+    }
+    if (dialogue.showGift) {
+      const giftOverlay = document.getElementById('gift-overlay');
+      const giftBox = document.getElementById('gift-box');
+      const giftImage = document.getElementById('gift-image');
+      giftBox.style.display = 'block';
+      giftOverlay.style.display = 'flex';
+      giftImage.style.display = 'none';
+      giftImage.src = dialogue.giftImage;
+      giftBox.onclick = () => {
+        giftBox.style.display = 'none';
+        giftImage.style.display = 'block';
+      };
+      const closeButton = giftOverlay.querySelector('#close-button');
+      closeButton.onclick = () => {
+        giftOverlay.style.display = 'none';
+      };
+    } else if (dialogue.showLetter) {
+      const letterOverlay = document.getElementById('letter-overlay');
+      letterOverlay.style.display = 'flex';
+      const closeButton = letterOverlay.querySelector('#close-button');
+      closeButton.onclick = () => {
+        letterOverlay.style.display = 'none';
+      };
+    }
+  }
+  function showChoices() {
+    dialogueBox.style.display = 'none';
+    choicesContainer.style.display = 'flex';
+    choicesContainer.innerHTML = '';
+    choices.forEach((choice, index) => {
+      const button = document.createElement('button');
+      button.className = 'choice-btn';
+      button.textContent = choice.text;
+      button.onclick = () => handleChoice(index);
+      choicesContainer.appendChild(button);
+    });
+  }
+  function handleChoice(choiceIndex) {
+    choicesContainer.style.display = 'none';
+    dialogueBox.style.display = 'block';
+    const response = choices[choiceIndex].response;
+    if (Array.isArray(response)) {
+      showResponse(response[0]);
+      setTimeout(() => {
+        showResponse(response[1]);
+      }, 2000);
+    } else {
+      showResponse(response);
+    }
+    currentDialogueIndex = kitchenDialogues.length - 2;
+  }
+  function showResponse(response) {
+    characterNameElement.textContent = response.name;
+    dialogueElement.textContent = response.text;
+    characterNameElement.style.color = response.nameColor;
+    characterSprite.src = response.sprite;
+  }
+  function advanceDialogue() {
+    if (currentDialogueIndex < kitchenDialogues.length) {
+      showDialogue(kitchenDialogues[currentDialogueIndex]);
+      currentDialogueIndex++;
+      if (currentDialogueIndex === kitchenDialogues.length) {
+        window.location.href = "https://websim.ai/p/cot9szmrzuvjo2okme0i";
+      }
+    }
+  }
+  dialogueBox.addEventListener('click', advanceDialogue);
+  advanceDialogue();
+});</script>
+</head>
+<body>
+    <div id="game-container">
+        <img id="character-sprite" alt="character">
+        <div id="dialogue-box">
+            <div id="character-name"></div>
+            <div id="dialogue"></div>
+        </div>
+        <div id="choices-container"></div>
+    </div>
+    
+    <div id="gift-overlay">
+        <div class="gift-container">
+            <button id="close-button">&#xd7;</button>
+            <div id="gift-box"></div>
+            <img id="gift-image" src="https://i.ibb.co/x700PvK/OIG1.jpg" alt="Gift">
+        </div>
+    </div>
+    
+    <div id="letter-overlay">
+        <div id="letter-content">
+            Para minha melhor amiga Isa!
+
+            Preparei uma cole&#xe7;&#xe3;o de roupas INCR&#xcd;VEL para voc&#xea;!
+
+            S&#xe3;o pe&#xe7;as super coloridas e estilosas que eu mesmo escolhi pensando no seu estilo &#xfa;nico. Tem at&#xe9; algumas pe&#xe7;as combinando com as minhas!
+
+            E o melhor: vamos fazer um desfile de moda particular depois! Vai ser T&#xc3;O divertido!
+
+            Afinal, ningu&#xe9;m entende mais de moda e estilo do que eu!
+
+            Com muito estilo, Alexy &#x1f499;
+            <button id="close-button" style="position: absolute; top: 10px; right: 10px;">&#xd7;</button>
+        </div>
+    </div>
+</body>
+</html>
